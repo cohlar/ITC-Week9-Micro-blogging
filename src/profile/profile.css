@@ -1,0 +1,20 @@
+#username {
+    font-size: 16px;
+    line-height: 19px;
+    margin-top: 6px;
+    margin-bottom: 18px;
+    padding-top: 20px;
+    padding-left: 16px;
+    padding-bottom: 22px;
+    color: white;
+    background: rgba(0, 0, 0, 0);
+    border: 2px solid #CCCCCC;
+    box-sizing: border-box;
+    border-radius: 6px;
+}
+
+label {
+    font-size: 18px;
+    line-height: 21px;
+    color: rgba(255, 255, 255, 0.8);
+}
