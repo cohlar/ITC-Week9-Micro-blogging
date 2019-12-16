@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function Message(props) {
-    const { username, message, timestamp } = props;
+    const { username, content, timestamp } = props;
     return (
         <div className='msg'>
             <div className='msg-header'>
@@ -9,7 +9,7 @@ export default function Message(props) {
                 <span>{timestamp}</span>
             </div>
             <div className='msg-content'>
-                {message}
+                {content}
             </div>
          </div>
     );
