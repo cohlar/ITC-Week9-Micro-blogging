@@ -30,6 +30,23 @@
     background: rgba(0, 0, 0, 0);
 }
 
+.btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.error-msg {
+    box-sizing: border-box;
+    padding: 7px 4px;
+    font-size: 16px;
+    line-height: 19px;
+    color: #721C24;
+    background: #F8D7DA;
+    border: 1px solid #F5C6CB;
+    border-radius: 4px;
+}
+
 .msg-container {
     width: 100%;
 }
