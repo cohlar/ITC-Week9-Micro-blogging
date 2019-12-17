@@ -44,6 +44,10 @@ button {
   outline: 0;
 }
 
+button:disabled {
+  background: #343A40;
+}
+
 header {
   height: 58px;
   width: 100%;

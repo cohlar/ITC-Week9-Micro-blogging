@@ -1,12 +1,12 @@
 import React from 'react';
 
 export default function Message(props) {
-    const { username, content, timestamp } = props;
+    const { userName, content, date } = props;
     return (
         <div className='msg'>
             <div className='msg-header'>
-                <span>{username}</span>
-                <span>{timestamp}</span>
+                <span>{userName}</span>
+                <span>{date}</span>
             </div>
             <div className='msg-content'>
                 {content}
