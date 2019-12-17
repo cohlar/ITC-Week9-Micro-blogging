@@ -14,9 +14,12 @@ export default class PostMessage extends React.Component {
         const newMessage = {};
         newMessage.content = event.target.value;
         newMessage.date = new Date;
-        newMessage.date = (newMessage.date.toISOString());
-        if (localStorage.getItem('savedUsername')) newMessage.userName = localStorage.getItem('savedUsername');
-        else newMessage.userName = 'somebody';
+        newMessage.date = newMessage.date.toISOString();
+        if (localStorage.getItem('savedUsername')) {
+            newMessage.userName = localStorage.getItem('savedUsername');
+        } else {
+            newMessage.userName = 'somebody';
+        }
         this.setState({ message: newMessage })
     }
 
