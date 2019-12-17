@@ -45,14 +45,9 @@
     border-radius: 4px;
 }
 
-
-button.postLoader {
-    font-size: 0;
-    background: url('../img/btn-loader.gif');
-}
-
 .msg-container {
     width: 100%;
+    min-height: 330px;  /* for the loader */
 }
 
 .msg {

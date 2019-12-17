@@ -5,6 +5,8 @@ const HomeContext = React.createContext({
   addMessage: (newMsg) => { },
   isLoadingGet: null,
   isLoadingPost: null,
+  errorGet: '',
+  errorPost: '',
 });
 
 export default HomeContext;

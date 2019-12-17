@@ -22,9 +22,10 @@ export default class PostMessage extends React.Component {
     render() {
         const { message } = this.state;
         const isTooLong = (!!message.content && (message.content.length > 140));
+
         return (
             <HomeContext.Consumer>
-                {({ addMessage, isLoadingPost }) => (
+                {({ addMessage, isLoadingPost, errorPost }) => (
                     <div className='post-msg-container'>
 
                         <textarea
@@ -36,7 +37,12 @@ export default class PostMessage extends React.Component {
 
                         <div className='btn-container'>
                             <span className='error-placeholder'>
-                                {isTooLong &&
+                                {errorPost.length>0 &&
+                                    <span className='error-msg'>
+                                        {errorPost}
+                                    </span>
+                                }
+                                {errorPost.length===0 && isTooLong &&
                                     <span className='error-msg'>
                                         The message can't contain more than 140 chars.
                                     </span>
@@ -45,11 +51,10 @@ export default class PostMessage extends React.Component {
                             <button
                                 onClick={() => addMessage(message)}
                                 disabled={isTooLong || isLoadingPost}
-                                className={ isLoadingPost && 'postLoader' }
+                                className={(isLoadingPost) ? 'loading' : ''}
                             >
                                 Post
                             </button>
-                            {/* <img src='../img/btn-loader.gif' alt='Loading...' /> */}
                         </div>
 
                     </div>

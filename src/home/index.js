@@ -13,31 +13,34 @@ export default class Home extends React.Component {
             addMessage: this.addMessage.bind(this),
             isLoadingGet: false,
             isLoadingPost: false,
+            errorGet: '',
+            errorPost: '',
         }
     }
 
     async getMessages() {
+        this.setState({ isLoadingGet: true });
         try {
             const response = await getMessages();
             const sortedMessages = this.sortMessages(response.data.tweets);
             this.setState({ messages: sortedMessages });
         }
         catch (error) {
-            alert('Server is down, please try again later. For additional details about the error, please see console.');
-            console.log(error);
+            this.setState({ errorGet: error.toString() });
         }
+        this.setState({ isLoadingGet: false });
     }
 
     async postMessage(newMsg) {
+        this.setState({ isLoadingPost: true });
         try {
-            this.setState({ isLoadingPost: true });
-            await postMessage(newMsg);
+            setTimeout(() => {}, 800);    // Because the server is too fast... we want users to see our beautiful loader :)
+            await postMessage(newMsg)
         }
         catch (error) {
-            alert('Server is down, please try again later. For additional details about the error, please see console.');
-            console.log(error);
+            this.setState({ errorPost: error.toString() });
         }
-        setTimeout(() => this.setState({ isLoadingPost: false }), 1000);    // Because the server is too fast... we want users to see our loader :)
+        this.setState({ isLoadingPost: false });
     }
 
     sortMessages(arr) {
@@ -54,18 +57,35 @@ export default class Home extends React.Component {
     }
 
     render() {
-        const { messages } = this.state;
+        const { messages, isLoadingGet, errorGet } = this.state;
         return (
             <main>
                 <HomeContext.Provider value={this.state}>
                     <PostMessage />
                 </HomeContext.Provider>
 
-                <div className='msg-container'>
-                    {!!messages && messages.map((msg) => <Message userName={msg.userName} content={msg.content} date={msg.date} key={msg.userName + msg.date} />)}
-                    {/* <Message username='yonatan' content='Lorem Ipsum' timestamp='2019-12-16' />
-                    <Message username='yonatan' content='Lorem Ipsum' timestamp='2019-12-16' />
-                    <Message username='yonatan' content='Lorem Ipsum' timestamp='2019-12-16' /> */}
+                <div
+                    className={(isLoadingGet) ? 'msg-container loading' : 'msg-container'}
+                >
+
+                    {errorGet.length > 0 && 
+                        <div className='error-msg'>{errorGet}</div>
+                    }
+
+                    {errorGet.length === 0 &&
+                    !isLoadingGet &&
+                    messages &&
+                    messages.map((msg) => {
+                        return (
+                            <Message
+                                userName={msg.userName}
+                                content={msg.content}
+                                date={msg.date}
+                                key={msg.userName + msg.date}
+                            />
+                        );
+                    })}
+
                 </div>
             </main>
         );

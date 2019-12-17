@@ -48,6 +48,15 @@ button:disabled {
   background: #343A40;
 }
 
+button.loading {
+  font-size: 0;
+  background: url('./img/post-loader.gif') center no-repeat;
+}
+
+div.loading {
+  background: url('./img/get-loader.gif') center no-repeat;
+}
+
 header {
   height: 58px;
   width: 100%;
