@@ -57,6 +57,10 @@ div.loading {
   background: url('./img/get-loader.gif') center no-repeat;
 }
 
+input:focus, textarea:focus {
+  outline: 0;
+}
+
 header {
   height: 58px;
   width: 100%;

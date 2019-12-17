@@ -21,10 +21,6 @@
     color: white;
 }
 
-.post-msg-input:focus {
-    outline: 0;
-}
-
 .post-msg-container, .post-msg-input {
     background: rgba(0, 0, 0, 0);
 }
@@ -59,6 +55,7 @@
     margin-bottom: 15px;
     background: #343A40;
     border-radius: 6px;
+    word-wrap: break-word;
 }
 
 .msg-header {

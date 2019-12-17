@@ -16,6 +16,7 @@ export default class Home extends React.Component {
             errorGet: '',
             errorPost: '',
         }
+        this.getMessages = this.getMessages.bind(this);
     }
 
     async getMessages() {
@@ -54,6 +55,11 @@ export default class Home extends React.Component {
 
     componentDidMount() {
         this.getMessages();
+        this.interval = setInterval(this.getMessages, 5000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
     }
 
     render() {
@@ -65,7 +71,7 @@ export default class Home extends React.Component {
                 </HomeContext.Provider>
 
                 <div
-                    className={(isLoadingGet) ? 'msg-container loading' : 'msg-container'}
+                    className={(isLoadingGet && messages.length === 0) ? 'msg-container loading' : 'msg-container'}
                 >
 
                     {errorGet.length > 0 && 
@@ -73,7 +79,6 @@ export default class Home extends React.Component {
                     }
 
                     {errorGet.length === 0 &&
-                    !isLoadingGet &&
                     messages &&
                     messages.map((msg) => {
                         return (
