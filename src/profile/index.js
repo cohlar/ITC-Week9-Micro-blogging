@@ -11,7 +11,7 @@ export default class Profile extends React.Component {
 
     componentDidMount() {
         const savedUsername = localStorage.getItem('savedUsername');
-        this.setState({username: savedUsername});
+        savedUsername && this.setState({username: savedUsername});
     }
 
     render() {
