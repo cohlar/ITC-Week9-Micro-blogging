@@ -1,8 +1,8 @@
 import React from 'react';
-import { getMessages, postMessage } from '../lib/api.js';
-import HomeContext from '../contexts/HomeContext.js';
-import PostMessage from '../components/PostMessage.js';
-import Message from '../components/Message.js';
+import { getMessages, postMessage } from '../../lib/api.js';
+import HomeContext from '../../contexts/HomeContext.js';
+import PostMessage from '../../components/PostMessage.js';
+import Message from '../../components/Message.js';
 import './home.css';
 
 export default class Home extends React.Component {
@@ -25,6 +25,9 @@ export default class Home extends React.Component {
             const response = await getMessages();
             const sortedMessages = this.sortMessages(response.data.tweets);
             this.setState({ messages: sortedMessages });
+            if (this.state.errorGet.length > 0) {
+                this.setState({ errorGet: '' });
+            }
         }
         catch (error) {
             this.setState({ errorGet: error.toString() });
@@ -35,8 +38,10 @@ export default class Home extends React.Component {
     async postMessage(newMsg) {
         this.setState({ isLoadingPost: true });
         try {
-            setTimeout(() => {}, 800);    // Because the server is too fast... we want users to see our beautiful loader :)
             await postMessage(newMsg)
+            if (this.state.errorPost.length > 0) {
+                this.setState({ errorPost: '' });
+            }
         }
         catch (error) {
             this.setState({ errorPost: error.toString() });

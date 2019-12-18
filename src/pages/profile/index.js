@@ -4,14 +4,18 @@ import './profile.css';
 export default class Profile extends React.Component {
     constructor(props) {
         super(props);
+        this.defaultUsername = 'somebody';
         this.state = {
-            username: '',
+            username: this.defaultUsername,
         }
     }
 
     componentDidMount() {
         const savedUsername = localStorage.getItem('savedUsername');
-        savedUsername && this.setState({username: savedUsername});
+        if (!savedUsername) {
+            localStorage.setItem('savedUsername', this.defaultUsername);
+        }
+        this.setState({username: savedUsername});
     }
 
     render() {

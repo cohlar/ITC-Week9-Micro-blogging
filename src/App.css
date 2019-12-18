@@ -44,6 +44,10 @@ button {
   outline: 0;
 }
 
+button:active {
+  transform: scale(1.1);
+}
+
 button:disabled {
   background: #343A40;
 }

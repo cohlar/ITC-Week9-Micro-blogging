@@ -13,7 +13,7 @@ export default class PostMessage extends React.Component {
     onChangeHandler(event) {
         const newMessage = {};
         newMessage.content = event.target.value;
-        newMessage.date = new Date;
+        newMessage.date = new Date();
         newMessage.date = newMessage.date.toISOString();
         if (localStorage.getItem('savedUsername')) {
             newMessage.userName = localStorage.getItem('savedUsername');
@@ -25,7 +25,8 @@ export default class PostMessage extends React.Component {
 
     render() {
         const { message } = this.state;
-        const isTooLong = (!!message.content && (message.content.length > 140));
+        const isTooLong = (message.content && (message.content.length > 140));
+        const isEmpty = !(message.content && (message.content.length > 0));
 
         return (
             <HomeContext.Consumer>
@@ -54,7 +55,7 @@ export default class PostMessage extends React.Component {
                             </span>
                             <button
                                 onClick={() => addMessage(message)}
-                                disabled={isTooLong || isLoadingPost}
+                                disabled={isEmpty || isTooLong || isLoadingPost}
                                 className={(isLoadingPost) ? 'loading' : ''}
                             >
                                 Post

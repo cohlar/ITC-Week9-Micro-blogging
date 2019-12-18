@@ -6,8 +6,8 @@ import {
 } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/Navbar.js';
-import Home from './home';
-import Profile from './profile';
+import Home from './pages/home';
+import Profile from './pages/profile';
 
 function App() {
   return (
