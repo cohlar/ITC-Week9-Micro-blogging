@@ -30,7 +30,7 @@ export default class PostMessage extends React.Component {
 
         return (
             <HomeContext.Consumer>
-                {({ addMessage, isLoadingPost, errorPost }) => (
+                {({ postMessage, isLoadingPost, errorPost }) => (
                     <div className='post-msg-container'>
 
                         <textarea
@@ -54,7 +54,7 @@ export default class PostMessage extends React.Component {
                                 }
                             </span>
                             <button
-                                onClick={() => addMessage(message)}
+                                onClick={() => postMessage(message)}
                                 disabled={isEmpty || isTooLong || isLoadingPost}
                                 className={(isLoadingPost) ? 'loading' : ''}
                             >

@@ -1,5 +1,5 @@
 import React from 'react';
-import { getMessages, postMessage } from '../../lib/api.js';
+import { getMessages, postMessage } from '../../lib/firebase-admin.js';
 import HomeContext from '../../contexts/HomeContext.js';
 import PostMessage from '../../components/PostMessage.js';
 import Message from '../../components/Message.js';
@@ -10,7 +10,7 @@ export default class Home extends React.Component {
         super(props);
         this.state = {
             messages: [],
-            addMessage: this.addMessage.bind(this),
+            postMessage: this.postMessage.bind(this),
             isLoadingGet: false,
             isLoadingPost: false,
             errorGet: '',
@@ -23,7 +23,7 @@ export default class Home extends React.Component {
         this.setState({ isLoadingGet: true });
         try {
             const response = await getMessages();
-            const sortedMessages = this.sortMessages(response.data.tweets);
+            const sortedMessages = this.sortMessages(response.docs);
             this.setState({ messages: sortedMessages });
             if (this.state.errorGet.length > 0) {
                 this.setState({ errorGet: '' });
@@ -38,7 +38,9 @@ export default class Home extends React.Component {
     async postMessage(newMsg) {
         this.setState({ isLoadingPost: true });
         try {
-            await postMessage(newMsg)
+            let response = await postMessage(newMsg);
+            response.data = () => newMsg;
+            this.setState((prevState) => ({ messages: [response, ...prevState.messages] }));
             if (this.state.errorPost.length > 0) {
                 this.setState({ errorPost: '' });
             }
@@ -50,12 +52,7 @@ export default class Home extends React.Component {
     }
 
     sortMessages(arr) {
-        return arr.sort((a, b) => (a.date < b.date) ? 1 : -1);
-    }
-
-    addMessage(newMsg) {
-        this.postMessage(newMsg);
-        this.setState((prevState) => ({ messages: [newMsg, ...prevState.messages] }));
+        return arr.sort((a, b) => (a.data().date < b.data().date) ? 1 : -1);
     }
 
     componentDidMount() {
@@ -79,22 +76,22 @@ export default class Home extends React.Component {
                     className={(isLoadingGet && messages.length === 0) ? 'msg-container loading' : 'msg-container'}
                 >
 
-                    {errorGet.length > 0 && 
+                    {errorGet.length > 0 &&
                         <div className='error-msg'>{errorGet}</div>
                     }
 
                     {errorGet.length === 0 &&
-                    messages &&
-                    messages.map((msg) => {
-                        return (
-                            <Message
-                                userName={msg.userName}
-                                content={msg.content}
-                                date={msg.date}
-                                key={msg.userName + msg.date}
-                            />
-                        );
-                    })}
+                        messages &&
+                        messages.map((msg) => {
+                            return (
+                                <Message
+                                    userName={msg.data().userName}
+                                    content={msg.data().content}
+                                    date={msg.data().date}
+                                    key={msg.id}
+                                />
+                            );
+                        })}
 
                 </div>
             </main>

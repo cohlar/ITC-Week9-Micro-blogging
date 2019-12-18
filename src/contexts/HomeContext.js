@@ -2,7 +2,7 @@ import React from 'react';
 
 const HomeContext = React.createContext({
   messages: [],
-  addMessage: (newMsg) => { },
+  postMessage: (newMsg) => { },
   isLoadingGet: null,
   isLoadingPost: null,
   errorGet: '',
