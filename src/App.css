@@ -20,6 +20,10 @@ a {
   text-decoration: none;
 }
 
+a:hover {
+  text-decoration: underline;
+}
+
 h1 {
   font-size: 36px;
   line-height: 42px;
@@ -29,6 +33,10 @@ h1 {
 }
 
 button {
+  cursor: pointer;
+}
+
+button:not(.firebaseui-idp-button) {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -39,13 +47,13 @@ button {
   font-size: 16px;
   line-height: 19px;
   background: #007BFF;
-  border-radius: 4px;
   border: none;
+  border-radius: 4px;
   outline: 0;
 }
 
-button:active {
-  transform: scale(1.1);
+button:active, a:active {
+  transform: scale(1.05);
 }
 
 button:disabled {

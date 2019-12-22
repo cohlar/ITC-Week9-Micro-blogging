@@ -1,5 +1,5 @@
 import React from 'react';
-import { getMessages, postMessage } from '../../lib/firebase-admin.js';
+import { getMessages, postMessage } from '../../lib/firebase.js';
 import HomeContext from '../../contexts/HomeContext.js';
 import PostMessage from '../../components/PostMessage.js';
 import Message from '../../components/Message.js';

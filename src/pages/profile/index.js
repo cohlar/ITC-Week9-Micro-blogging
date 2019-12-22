@@ -4,17 +4,13 @@ import './profile.css';
 export default class Profile extends React.Component {
     constructor(props) {
         super(props);
-        this.defaultUsername = 'somebody';
         this.state = {
-            username: this.defaultUsername,
+            username: '',
         }
     }
 
     componentDidMount() {
         const savedUsername = localStorage.getItem('savedUsername');
-        if (!savedUsername) {
-            localStorage.setItem('savedUsername', this.defaultUsername);
-        }
         this.setState({username: savedUsername});
     }
 
@@ -36,6 +32,7 @@ export default class Profile extends React.Component {
                 <button
                     className='save-btn'
                     onClick={() => localStorage.setItem('savedUsername', username)}
+                    disabled={(localStorage.getItem('savedUsername') === username)}
                 >
                     Save
                 </button>
