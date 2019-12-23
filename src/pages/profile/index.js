@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './profile.css';
-import { getUser, updateUserDisplayName, updateUserPhoto, uploadUserPhoto } from '../../lib/firebase.js';
+import { getUser, updateUserDisplayName, updateUserPhoto, uploadUserPhoto, setUserInFirestore } from '../../lib/firebase.js';
+import Avatar from '../../components/Avatar.js';
 
 export default function Profile() {
     const [usernameInput, setUsernameInput] = useState('');
@@ -23,6 +24,7 @@ export default function Profile() {
             updateUserPhoto(user, url);
             setAvatarInput('');
         }
+        setUserInFirestore(user);
     };
 
     useEffect(() => {
@@ -35,7 +37,11 @@ export default function Profile() {
         <main>
             <h1 className='profile-header'>
                 Profile
-                <img src={avatarURL} alt={user.displayName + ' avatar picture'} className='avatar' />
+                <Avatar
+                    avatarURL={avatarURL}
+                    username={user.displayName}
+                    className='avatar-profile'
+                />
             </h1>
 
             <form>

@@ -3,6 +3,11 @@ h1.profile-header {
     justify-content: space-between;
 }
 
+.avatar-profile {
+    height: 50px;
+    width: 50px;
+}
+
 form {
     display: flex;
     flex-direction: column;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { postMessage, setMessageListener, getUser } from '../../lib/firebase.js';
+import { postMessage, setMessageListener } from '../../lib/firebase.js';
 import HomeContext from '../../contexts/HomeContext.js';
 import PostMessage from '../../components/PostMessage.js';
 import Message from '../../components/Message.js';
@@ -73,7 +73,7 @@ export default class Home extends React.Component {
                         messages.map((msg) => {
                             return (
                                 <Message
-                                    userName={msg.data().userName}
+                                    userId={msg.data().userId}
                                     content={msg.data().content}
                                     date={msg.data().date}
                                     key={msg.id}

@@ -65,10 +65,22 @@
 .msg-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     color: #6C757D;
     margin-bottom: 16px;
 }
 
+.msg-header .user {
+    display: flex;
+    align-items: center;
+}
+
 .msg-content {
     flex-grow: 1;
+}
+
+.avatar-msg {
+    height: 25px;
+    width: 25px;
+    margin-right: 10px;
 }

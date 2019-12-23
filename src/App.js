@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import firebase from 'firebase/app';
 import './App.css';
+import { setUserInFirestore } from './lib/firebase.js';
 import AppContext from './contexts/AppContext.js';
 import Navbar from './components/Navbar.js';
 import Home from './pages/Home';
@@ -19,6 +20,7 @@ function App() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         setUser(user);
+        setUserInFirestore(user);
       } else {
         setUser(null);
       }

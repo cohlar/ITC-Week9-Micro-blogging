@@ -9,15 +9,23 @@ export default class PostMessage extends React.Component {
             message: {},
         }
         this.onChangeHandler = this.onChangeHandler.bind(this);
+        this.onSubmitHandler = this.onSubmitHandler.bind(this);
     }
 
     onChangeHandler(event) {
         const newMessage = {};
         newMessage.content = event.target.value;
+        this.setState({ message: newMessage });
+    }
+
+    onSubmitHandler(callback) {
+        const { message } = this.state;
+        const newMessage = {};
+        newMessage.content = message.content;
         newMessage.date = new Date();
         newMessage.date = newMessage.date.toISOString();
-        newMessage.userName = getUser().displayName;
-        this.setState({ message: newMessage })
+        newMessage.userId = getUser().uid;
+        this.setState({ message: newMessage }, () => callback(newMessage));
     }
 
     render() {
@@ -39,19 +47,19 @@ export default class PostMessage extends React.Component {
 
                         <div className='btn-container'>
                             <span className='error-placeholder'>
-                                {errorPost.length>0 &&
+                                {errorPost.length > 0 &&
                                     <span className='error-msg'>
                                         {errorPost}
                                     </span>
                                 }
-                                {errorPost.length===0 && isTooLong &&
+                                {errorPost.length === 0 && isTooLong &&
                                     <span className='error-msg'>
                                         The message can't contain more than 140 chars.
                                     </span>
                                 }
                             </span>
                             <button
-                                onClick={() => postMessage(message)}
+                                onClick={() => this.onSubmitHandler(postMessage)}
                                 disabled={isEmpty || isTooLong || isLoadingPost}
                                 className={(isLoadingPost) ? 'loading' : ''}
                             >
