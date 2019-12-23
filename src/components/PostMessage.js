@@ -1,4 +1,5 @@
 import React from 'react';
+import { getUser } from '../lib/firebase.js';
 import HomeContext from '../contexts/HomeContext.js';
 
 export default class PostMessage extends React.Component {
@@ -15,11 +16,7 @@ export default class PostMessage extends React.Component {
         newMessage.content = event.target.value;
         newMessage.date = new Date();
         newMessage.date = newMessage.date.toISOString();
-        if (localStorage.getItem('savedUsername')) {
-            newMessage.userName = localStorage.getItem('savedUsername');
-        } else {
-            newMessage.userName = 'somebody';
-        }
+        newMessage.userName = getUser().displayName;
         this.setState({ message: newMessage })
     }
 

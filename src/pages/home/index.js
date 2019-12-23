@@ -1,5 +1,5 @@
 import React from 'react';
-import { getMessages, postMessage } from '../../lib/firebase.js';
+import { postMessage, setMessageListener, getUser } from '../../lib/firebase.js';
 import HomeContext from '../../contexts/HomeContext.js';
 import PostMessage from '../../components/PostMessage.js';
 import Message from '../../components/Message.js';
@@ -11,36 +11,29 @@ export default class Home extends React.Component {
         this.state = {
             messages: [],
             postMessage: this.postMessage.bind(this),
-            isLoadingGet: false,
             isLoadingPost: false,
             errorGet: '',
             errorPost: '',
         }
-        this.getMessages = this.getMessages.bind(this);
+        this.messageListenerSuccessHandler = this.messageListenerSuccessHandler.bind(this);
+        this.messageListenerErrorHandler = this.messageListenerErrorHandler.bind(this);
     }
 
-    async getMessages() {
-        this.setState({ isLoadingGet: true });
-        try {
-            const response = await getMessages();
-            const sortedMessages = this.sortMessages(response.docs);
-            this.setState({ messages: sortedMessages });
-            if (this.state.errorGet.length > 0) {
-                this.setState({ errorGet: '' });
-            }
+    messageListenerSuccessHandler(querySnapshot) {
+        this.setState({ messages: querySnapshot.docs });
+        if (this.state.errorGet.length > 0) {
+            this.setState({ errorGet: '' });
         }
-        catch (error) {
-            this.setState({ errorGet: error.toString() });
-        }
-        this.setState({ isLoadingGet: false });
+    }
+
+    messageListenerErrorHandler(error) {
+        this.setState({ errorGet: error.toString() }); 
     }
 
     async postMessage(newMsg) {
         this.setState({ isLoadingPost: true });
         try {
-            let response = await postMessage(newMsg);
-            response.data = () => newMsg;
-            this.setState((prevState) => ({ messages: [response, ...prevState.messages] }));
+            await postMessage(newMsg);
             if (this.state.errorPost.length > 0) {
                 this.setState({ errorPost: '' });
             }
@@ -51,21 +44,16 @@ export default class Home extends React.Component {
         this.setState({ isLoadingPost: false });
     }
 
-    sortMessages(arr) {
-        return arr.sort((a, b) => (a.data().date < b.data().date) ? 1 : -1);
-    }
-
     componentDidMount() {
-        this.getMessages();
-        this.interval = setInterval(this.getMessages, 5000);
+        this.unsuscribe = setMessageListener(this.messageListenerSuccessHandler, this.messageListenerErrorHandler);
     }
 
     componentWillUnmount() {
-        clearInterval(this.interval);
+        this.unsuscribe();
     }
 
     render() {
-        const { messages, isLoadingGet, errorGet } = this.state;
+        const { messages, errorGet } = this.state;
         return (
             <main>
                 <HomeContext.Provider value={this.state}>
@@ -73,7 +61,7 @@ export default class Home extends React.Component {
                 </HomeContext.Provider>
 
                 <div
-                    className={(isLoadingGet && messages.length === 0) ? 'msg-container loading' : 'msg-container'}
+                    className={(messages.length === 0) ? 'msg-container loading' : 'msg-container'}
                 >
 
                     {errorGet.length > 0 &&

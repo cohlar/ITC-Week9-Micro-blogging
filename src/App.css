@@ -100,3 +100,10 @@ main {
   min-width: 600px;
   padding: 47px 0;
 }
+
+.avatar {
+  height: 50px;
+  width: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+}

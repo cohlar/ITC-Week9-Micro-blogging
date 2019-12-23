@@ -4,31 +4,33 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
-import './App.css';
 import firebase from 'firebase/app';
+import './App.css';
+import AppContext from './contexts/AppContext.js';
 import Navbar from './components/Navbar.js';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
 
 function App() {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   const authListener = function () {
     firebase.auth().onAuthStateChanged((user) => {
-      setIsSignedIn(!!user);
-      if (user && !localStorage.getItem('savedUsername')) {
-        localStorage.setItem('savedUsername', user.displayName);
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
       }
     });
-    return () => setIsSignedIn(false);
+    return () => setUser(null);
   };
 
   const signOut = function () {
     firebase.auth().signOut()
-    .catch(function (error) {
-      alert('Sign out error:', error.toString());
-    });
+      .catch(function (error) {
+        alert('Sign out error:', error.toString());
+      });
   };
 
   useEffect(authListener, []);
@@ -38,11 +40,11 @@ function App() {
     <div className="App">
       <Router>
 
-        <Navbar isSignedIn={isSignedIn} signOut={signOut} />
+        <Navbar isSignedIn={!!user} signOut={signOut} />
 
-        {!isSignedIn && <Login />}
+        {!user && <Login />}
 
-        {isSignedIn &&
+        {user &&
           <Switch>
 
             <Route exact path='/'>
@@ -50,7 +52,9 @@ function App() {
             </Route>
 
             <Route path='/profile'>
-              <Profile />
+              <AppContext.Provider value={{ user: user, setUser: setUser }}>
+                <Profile />
+              </AppContext.Provider>
             </Route>
 
           </Switch>
