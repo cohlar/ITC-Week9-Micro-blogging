@@ -32,6 +32,14 @@ export function setMessageListener(successCallback, errorCallback) {
     });
 }
 
+export function getMessagesStartAfter(lastVisible) {
+  return db.collection('messages')
+    .orderBy('date', 'desc')
+    .startAfter(lastVisible)
+    .limit(10)
+    .get();
+}
+
 export function getUser() {
   return firebase.auth().currentUser;
 }
@@ -43,6 +51,7 @@ export function updateUserDisplayName(user, displayName) {
 export function updateUserPhoto(user, photoURL) {
   user.updateProfile({ photoURL: photoURL });
 }
+
 export function setUserInFirestore(user) {
   return db.collection('users').doc(user.uid).set({
     userName: user.displayName,
@@ -55,6 +64,7 @@ export function getUserById(userId) {
 }
 
 export async function uploadUserPhoto(file, userId) {
+  // const timestamp = Number(new Date());
   const storageRef = await storage.ref(userId);
   const snapshot = await storageRef.put(file);
   return snapshot.ref.getDownloadURL();

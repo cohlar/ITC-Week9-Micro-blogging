@@ -1,5 +1,6 @@
 import React from 'react';
-import { postMessage, setMessageListener } from '../../lib/firebase.js';
+import InfiniteScroll from 'react-infinite-scroller';
+import { postMessage, setMessageListener, getMessagesStartAfter } from '../../lib/firebase.js';
 import HomeContext from '../../contexts/HomeContext.js';
 import PostMessage from '../../components/PostMessage.js';
 import Message from '../../components/Message.js';
@@ -14,20 +15,26 @@ export default class Home extends React.Component {
             isLoadingPost: false,
             errorGet: '',
             errorPost: '',
+            hasMore: true,
         }
         this.messageListenerSuccessHandler = this.messageListenerSuccessHandler.bind(this);
         this.messageListenerErrorHandler = this.messageListenerErrorHandler.bind(this);
+        this.loadMore = this.loadMore.bind(this);
+        this.isInitialUploadFinished = false;
+        this.lastVisible = null;
     }
 
     messageListenerSuccessHandler(querySnapshot) {
         this.setState({ messages: querySnapshot.docs });
+        this.lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
         if (this.state.errorGet.length > 0) {
             this.setState({ errorGet: '' });
         }
+        this.isInitialUploadFinished = true;
     }
 
     messageListenerErrorHandler(error) {
-        this.setState({ errorGet: error.toString() }); 
+        this.setState({ errorGet: error.toString() });
     }
 
     async postMessage(newMsg) {
@@ -44,8 +51,22 @@ export default class Home extends React.Component {
         this.setState({ isLoadingPost: false });
     }
 
+    loadMore = async () => {
+        // if (this.isInitialUploadFinished) {#
+        if (this.lastVisible) {
+            const querySnapshot = await getMessagesStartAfter(this.lastVisible);
+            const currentMessages = this.state.messages;
+            this.setState({ messages: currentMessages.concat(querySnapshot.docs) });
+            this.lastVisible = querySnapshot.docs[querySnapshot.docs.length-1];
+        } else {
+            this.setState({hasMore: false});
+        }
+        console.log(this.state.hasMore)
+    }
+
     componentDidMount() {
-        this.unsuscribe = setMessageListener(this.messageListenerSuccessHandler, this.messageListenerErrorHandler);
+        this.unsuscribe =
+            setMessageListener(this.messageListenerSuccessHandler, this.messageListenerErrorHandler);
     }
 
     componentWillUnmount() {
@@ -53,35 +74,42 @@ export default class Home extends React.Component {
     }
 
     render() {
-        const { messages, errorGet } = this.state;
+        const { messages, errorGet, hasMore } = this.state;
         return (
             <main>
                 <HomeContext.Provider value={this.state}>
                     <PostMessage />
                 </HomeContext.Provider>
 
-                <div
-                    className={(messages.length === 0) ? 'msg-container loading' : 'msg-container'}
+                <InfiniteScroll
+                    pageStart={0}
+                    loadMore={() => setTimeout(this.loadMore, 1000)}
+                    hasMore={hasMore}
+                    loader={hasMore && <div className="msg-container loading" key={0}></div>}
                 >
+                    <div
+                        className={(messages.length === 0) ? 'msg-container loading' : 'msg-container'}
+                    >
 
-                    {errorGet.length > 0 &&
-                        <div className='error-msg'>{errorGet}</div>
-                    }
+                        {errorGet.length > 0 &&
+                            <div className='error-msg'>{errorGet}</div>
+                        }
 
-                    {errorGet.length === 0 &&
-                        messages &&
-                        messages.map((msg) => {
-                            return (
-                                <Message
-                                    userId={msg.data().userId}
-                                    content={msg.data().content}
-                                    date={msg.data().date}
-                                    key={msg.id}
-                                />
-                            );
-                        })}
+                        {errorGet.length === 0 &&
+                            messages &&
+                            messages.map((msg) => {
+                                return (
+                                    <Message
+                                        userId={msg.data().userId}
+                                        content={msg.data().content}
+                                        date={msg.data().date}
+                                        key={msg.id}
+                                    />
+                                );
+                            })}
 
-                </div>
+                    </div>
+                </InfiniteScroll>
             </main>
         );
     }

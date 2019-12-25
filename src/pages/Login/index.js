@@ -1,6 +1,7 @@
 import React from 'react';
 import firebase from 'firebase/app';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import './login.css';
 import uiConfig from '../../config/uiConfig.js';
 
 export default function Login() {
