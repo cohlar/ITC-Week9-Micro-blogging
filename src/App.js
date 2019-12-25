@@ -15,17 +15,17 @@ import Login from './pages/Login';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [isAuthCompleted, setIsAuthCompleted] = useState(false);
 
   const authListener = function () {
-    firebase.auth().onAuthStateChanged((user) => {
+    const unsuscribe = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        setUser(user);
         setUserInFirestore(user);
-      } else {
-        setUser(null);
       }
+      setUser(user);
+      setIsAuthCompleted(true);
     });
-    return () => setUser(null);
+    return () => unsuscribe();
   };
 
   const signOut = function () {
@@ -40,29 +40,31 @@ function App() {
   return (
 
     <div className="App">
-      <Router>
+      {isAuthCompleted &&
+        <Router>
 
-        <Navbar isSignedIn={!!user} signOut={signOut} />
+          <Navbar isSignedIn={!!user} signOut={signOut} />
 
-        {!user && <Login />}
+          {!user && <Login />}
 
-        {user &&
-          <Switch>
+          {user &&
+            <Switch>
 
-            <Route exact path='/'>
-              <Home />
-            </Route>
+              <Route exact path='/'>
+                <Home />
+              </Route>
 
-            <Route path='/profile'>
-              <AppContext.Provider value={{ user: user, setUser: setUser }}>
-                <Profile />
-              </AppContext.Provider>
-            </Route>
+              <Route path='/profile'>
+                <AppContext.Provider value={{ user: user, setUser: setUser }}>
+                  <Profile />
+                </AppContext.Provider>
+              </Route>
 
-          </Switch>
-        }
+            </Switch>
+          }
 
-      </Router>
+        </Router>
+      }
     </div>
   );
 }

@@ -14,17 +14,17 @@ export default function Profile() {
     const onSubmit = async (event) => {
         event.preventDefault();
         if (usernameInput !== savedUsername) {
-            updateUserDisplayName(user, usernameInput);
+            await updateUserDisplayName(user, usernameInput);
             setSavedUsername(usernameInput);
         }
         if (avatarInput) {
             const file = document.querySelector('#avatar-input').files[0];
             const url = await uploadUserPhoto(file, user.uid);
             setAvatarURL(url);
-            updateUserPhoto(user, url);
             setAvatarInput('');
+            await updateUserPhoto(user, url);
         }
-        setUserInFirestore(user);
+        setTimeout(() => setUserInFirestore(user), 1000);
     };
 
     useEffect(() => {
@@ -37,11 +37,16 @@ export default function Profile() {
         <main>
             <h1 className='profile-header'>
                 Profile
-                <Avatar
-                    avatarURL={avatarURL}
-                    username={user.displayName}
-                    className='avatar-profile'
-                />
+                {avatarURL &&
+                    <Avatar
+                        avatarURL={avatarURL}
+                        username={user.displayName}
+                        className='avatar-profile'
+                    />
+                }
+                {!avatarURL &&
+                    <span className='warning'>No profile picture</span>
+                }
             </h1>
 
             <form>

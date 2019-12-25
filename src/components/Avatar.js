@@ -2,6 +2,7 @@ import React from 'react';
 
 export default function Avatar(props) {
     const { avatarURL, username, className } = props;
+
     return (
         <img
             src={avatarURL}
@@ -9,4 +10,5 @@ export default function Avatar(props) {
             className={'avatar ' + className}
         />
     );
+
 }

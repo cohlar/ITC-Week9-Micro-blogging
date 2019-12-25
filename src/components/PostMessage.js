@@ -6,32 +6,31 @@ export default class PostMessage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            message: {},
+            messageContent: '',
         }
         this.onChangeHandler = this.onChangeHandler.bind(this);
         this.onSubmitHandler = this.onSubmitHandler.bind(this);
     }
 
     onChangeHandler(event) {
-        const newMessage = {};
-        newMessage.content = event.target.value;
-        this.setState({ message: newMessage });
+        let newMessageContent = '';
+        newMessageContent = event.target.value;
+        this.setState({ messageContent: newMessageContent });
     }
 
     onSubmitHandler(callback) {
-        const { message } = this.state;
+        const { messageContent } = this.state;
         const newMessage = {};
-        newMessage.content = message.content;
-        newMessage.date = new Date();
-        newMessage.date = newMessage.date.toISOString();
+        newMessage.content = messageContent;
+        newMessage.date = new Date().toISOString();
         newMessage.userId = getUser().uid;
-        this.setState({ message: newMessage }, () => callback(newMessage));
+        callback(newMessage);
     }
 
     render() {
-        const { message } = this.state;
-        const isTooLong = (message.content && (message.content.length > 140));
-        const isEmpty = !(message.content && (message.content.length > 0));
+        const { messageContent } = this.state;
+        const isTooLong = (messageContent && (messageContent.length > 140));
+        const isEmpty = !(messageContent && (messageContent.length > 0));
 
         return (
             <HomeContext.Consumer>

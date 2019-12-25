@@ -3,16 +3,9 @@ import 'firebase/firestore';
 import 'firebase/storage';
 import firebaseConfig from '../config/firebaseConfig.js';
 
-// Initialize Cloud Firestore through Firebase
 firebase.initializeApp(firebaseConfig);
-
-// Get a reference to the database service
 let db = firebase.firestore();
 
-// Get a reference to the storage service, which is used to create references in your storage bucket
-let storage = firebase.storage();
-
-// Define re-usable functions
 export function getMessages() {
   return db.collection('messages').get();
 }
@@ -65,7 +58,7 @@ export function getUserById(userId) {
 
 export async function uploadUserPhoto(file, userId) {
   // const timestamp = Number(new Date());
-  const storageRef = await storage.ref(userId);
+  const storageRef = await firebase.storage().ref(userId);
   const snapshot = await storageRef.put(file);
   return snapshot.ref.getDownloadURL();
 }

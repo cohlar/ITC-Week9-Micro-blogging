@@ -20,7 +20,7 @@ export default class Home extends React.Component {
         this.messageListenerSuccessHandler = this.messageListenerSuccessHandler.bind(this);
         this.messageListenerErrorHandler = this.messageListenerErrorHandler.bind(this);
         this.loadMore = this.loadMore.bind(this);
-        this.isInitialUploadFinished = false;
+        this.isComponentMounted = false;
         this.lastVisible = null;
     }
 
@@ -30,7 +30,6 @@ export default class Home extends React.Component {
         if (this.state.errorGet.length > 0) {
             this.setState({ errorGet: '' });
         }
-        this.isInitialUploadFinished = true;
     }
 
     messageListenerErrorHandler(error) {
@@ -52,25 +51,25 @@ export default class Home extends React.Component {
     }
 
     loadMore = async () => {
-        // if (this.isInitialUploadFinished) {#
         if (this.lastVisible) {
             const querySnapshot = await getMessagesStartAfter(this.lastVisible);
             const currentMessages = this.state.messages;
             this.setState({ messages: currentMessages.concat(querySnapshot.docs) });
-            this.lastVisible = querySnapshot.docs[querySnapshot.docs.length-1];
+            this.lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
         } else {
-            this.setState({hasMore: false});
+            this.setState({ hasMore: false });
         }
-        console.log(this.state.hasMore)
     }
 
     componentDidMount() {
         this.unsuscribe =
             setMessageListener(this.messageListenerSuccessHandler, this.messageListenerErrorHandler);
+        this.isComponentMounted = true;
     }
 
     componentWillUnmount() {
         this.unsuscribe();
+        this.isComponentMounted = false;
     }
 
     render() {
@@ -83,10 +82,12 @@ export default class Home extends React.Component {
 
                 <InfiniteScroll
                     pageStart={0}
-                    loadMore={() => setTimeout(this.loadMore, 1000)}
+                    loadMore={this.loadMore}
                     hasMore={hasMore}
                     loader={hasMore && <div className="msg-container loading" key={0}></div>}
+                    initialLoad={false}
                 >
+
                     <div
                         className={(messages.length === 0) ? 'msg-container loading' : 'msg-container'}
                     >
@@ -109,6 +110,7 @@ export default class Home extends React.Component {
                             })}
 
                     </div>
+
                 </InfiniteScroll>
             </main>
         );

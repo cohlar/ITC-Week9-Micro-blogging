@@ -13,24 +13,24 @@ export default function Message(props) {
         setAvatarURL(user.data().avatarURL);
     };
 
-    useEffect(() => {
+    useEffect( () => {
         setUserAsync();
     }, []);
 
-    if (username && avatarURL) {
+    if (username) {
         return (
             <div className='msg'>
                 <div className='msg-header'>
                     <span className='user'>
                         <Avatar
-                            avatarURL={avatarURL}
+                            avatarURL={avatarURL ? avatarURL : 'https://picsum.photos/200/300'}
                             username={username}
                             className='avatar-msg'
                         />
 
                         {username}
                     </span>
-                    <span>{date.substring(0,10) + ' at ' + date.substring(11,19)}</span>
+                    <span>{date.substring(0, 10) + ' at ' + date.substring(11, 19)}</span>
                 </div>
                 <div className='msg-content'>
                     {content}

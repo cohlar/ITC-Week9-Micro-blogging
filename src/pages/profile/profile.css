@@ -1,6 +1,12 @@
 h1.profile-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+h1.profile-header .warning {
+    color: gray;
+    font-style: italic;
 }
 
 .avatar-profile {
