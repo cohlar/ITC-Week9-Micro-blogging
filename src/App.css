@@ -98,7 +98,8 @@ main {
   flex-direction: column;
   width: 600px;
   min-width: 600px;
-  padding: 47px 0;
+  padding-top: 30px;
+  padding-bottom: 10px;
 }
 
 .avatar {
