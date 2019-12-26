@@ -15,8 +15,9 @@ export default class Home extends React.Component {
             isLoadingPost: false,
             errorGet: '',
             errorPost: '',
-            hasMore: true,
+            hasMore: false,
         }
+        this.limit = 10;
         this.messageListenerSuccessHandler = this.messageListenerSuccessHandler.bind(this);
         this.messageListenerErrorHandler = this.messageListenerErrorHandler.bind(this);
         this.loadMore = this.loadMore.bind(this);
@@ -29,6 +30,9 @@ export default class Home extends React.Component {
         this.lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
         if (this.state.errorGet.length > 0) {
             this.setState({ errorGet: '' });
+        }
+        if (querySnapshot.docs.length === this.limit) {
+            this.setState({ hasMore: true });
         }
     }
 
@@ -51,8 +55,8 @@ export default class Home extends React.Component {
     }
 
     loadMore = async () => {
-        if (this.lastVisible) {
-            const querySnapshot = await getMessagesStartAfter(this.lastVisible);
+        const querySnapshot = await getMessagesStartAfter(this.lastVisible, this.limit);
+        if (querySnapshot.docs.length > 0) {
             const currentMessages = this.state.messages;
             this.setState({ messages: currentMessages.concat(querySnapshot.docs) });
             this.lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
@@ -63,7 +67,7 @@ export default class Home extends React.Component {
 
     componentDidMount() {
         this.unsuscribe =
-            setMessageListener(this.messageListenerSuccessHandler, this.messageListenerErrorHandler);
+            setMessageListener(this.messageListenerSuccessHandler, this.messageListenerErrorHandler, this.limit);
         this.isComponentMounted = true;
     }
 

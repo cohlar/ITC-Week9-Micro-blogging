@@ -14,10 +14,10 @@ export function postMessage(payload) {
   return db.collection('messages').add(payload);
 }
 
-export function setMessageListener(successCallback, errorCallback) {
+export function setMessageListener(successCallback, errorCallback, limit) {
   return db.collection('messages')
     .orderBy('date', 'desc')
-    .limit(10)
+    .limit(limit)
     .onSnapshot(function (querySnapshot) {
       successCallback(querySnapshot);
     }, function (error) {
@@ -25,11 +25,11 @@ export function setMessageListener(successCallback, errorCallback) {
     });
 }
 
-export function getMessagesStartAfter(lastVisible) {
+export function getMessagesStartAfter(lastVisible, limit) {
   return db.collection('messages')
     .orderBy('date', 'desc')
     .startAfter(lastVisible)
-    .limit(10)
+    .limit(limit)
     .get();
 }
 
@@ -57,7 +57,6 @@ export function getUserById(userId) {
 }
 
 export async function uploadUserPhoto(file, userId) {
-  // const timestamp = Number(new Date());
   const storageRef = await firebase.storage().ref(userId);
   const snapshot = await storageRef.put(file);
   return snapshot.ref.getDownloadURL();

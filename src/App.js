@@ -8,10 +8,11 @@ import firebase from 'firebase/app';
 import './App.css';
 import { setUserInFirestore } from './lib/firebase.js';
 import AppContext from './contexts/AppContext.js';
-import Navbar from './components/Navbar.js';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
+import Navbar from './components/Navbar.js';
+import NonExistentPage from './components/NonExistentPage.js';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -59,6 +60,10 @@ function App() {
                   <Profile />
                 </AppContext.Provider>
               </Route>
+
+              <Route path='/*'>
+                <NonExistentPage />
+              </Route>  
 
             </Switch>
           }
